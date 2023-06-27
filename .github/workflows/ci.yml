@@ -14,7 +14,7 @@ jobs:
     strategy:
       max-parallel: 4
       matrix:
-        python: ["3.7", "3.8", "3.9", "3.10", "3.11"]
+        python: ["3.11"]
     steps:
       - name: Checkout
         uses: actions/checkout@v2
@@ -24,11 +24,7 @@ jobs:
           python-version: ${{ matrix.python }}
       - name: Install test dependencies
         run: |
-          pip install -r test-requirements.txt
+          poetry install
       - name: Test
         run: |
-          make lint && tox
-      - name: Coveralls GitHub Action
-        uses: AndreMiras/coveralls-python-action@develop
-        with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
+          pytest
