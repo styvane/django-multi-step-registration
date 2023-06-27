@@ -9,20 +9,20 @@
 <body>
     <div id="header">
     {% block header %}
-    <a href="{% url 'index' %}">{% trans "Home" %}</a> |
+    <a href="{% url 'index' %}">{% translate "Home" %}</a> |
 
     {% if user.is_authenticated %}
-        {% trans "Logged in" %}: {{ user.get_username }}
-        (<a href="{% url 'auth_logout' %}">{% trans "Log out" %}</a> |
-        <a href="{% url 'auth_password_change' %}">{% trans "Change password" %}</a>)
+        {% translate "Logged in" %}: {{ user.get_username }}
+        (<a href="{% url 'auth_logout' %}">{% translate "Log out" %}</a> |
+        <a href="{% url 'auth_password_change' %}">{% translate "Change password" %}</a>)
     {% else %}
-       <a href="{% url 'auth_login' %}">{% trans "Log In" %}</a>
+       <a href="{% url 'auth_login' %}">{% translate "Log In" %}</a>
     {% endif %}
-    {% endblock %}
+    {% endblock header %}
     </div>
 
     <div id="content">
-    <h1>{% block title %}{% endblock %}</h1>
+    <h1>{% block title %}{% endblock title %}</h1>
     {% block content %}
 
     {% endblock content %}
@@ -30,8 +30,7 @@
 
     <div id="footer">
     {% block footer %}
-
-    {% endblock %}
+    {% endblock footer %}
     </div>
 </body>
 
