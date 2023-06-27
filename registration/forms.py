@@ -1,5 +1,5 @@
 """
-Forms and validation code for user registration.
+Forms and validation code for user registration
 
 Note that all of these forms assume Django's bundle default ``User``
 model; since it's not possible for a form to anticipate in advance the
@@ -8,13 +8,11 @@ you're using a custom model.
 
 """
 from django import forms
+from django.contrib.auth import get_user_model
 from django.contrib.auth.forms import UserCreationForm
+from django.utils.translation import gettext_lazy as _
 
-from .users import UserModel
-from .users import UsernameField
-from .utils import _
-
-User = UserModel()
+User = get_user_model()
 
 
 class RegistrationForm(UserCreationForm):
@@ -30,12 +28,13 @@ class RegistrationForm(UserCreationForm):
     registration backend.
 
     """
-    required_css_class = 'required'
+
+    required_css_class = "required"
     email = forms.EmailField(label=_("E-mail"))
 
     class Meta:
         model = User
-        fields = (UsernameField(), "email")
+        fields = (User.USERNAME_FIELD, "email")
 
 
 class RegistrationFormUsernameLowercase(RegistrationForm):
@@ -44,10 +43,11 @@ class RegistrationFormUsernameLowercase(RegistrationForm):
     usernames, make all usernames to lower case.
 
     """
+
     def clean_username(self):
-        username = self.cleaned_data.get('username', '').lower()
-        if User.objects.filter(**{UsernameField(): username}).exists():
-            raise forms.ValidationError(_('A user with that username already exists.'))
+        username = self.cleaned_data.get("username", "").lower()
+        if User.objects.filter(**{User.USERNAME_FIELD: username}).exists():
+            raise forms.ValidationError(_("A user with that username already exists."))
 
         return username
 
@@ -58,9 +58,12 @@ class RegistrationFormTermsOfService(RegistrationForm):
     for agreeing to a site's Terms of Service.
 
     """
-    tos = forms.BooleanField(widget=forms.CheckboxInput,
-                             label=_('I have read and agree to the Terms of Service'),
-                             error_messages={'required': _("You must agree to the terms to register")})
+
+    tos = forms.BooleanField(
+        widget=forms.CheckboxInput,
+        label=_("I have read and agree to the Terms of Service"),
+        error_messages={"required": _("You must agree to the terms to register")},
+    )
 
 
 class RegistrationFormUniqueEmail(RegistrationForm):
@@ -69,15 +72,21 @@ class RegistrationFormUniqueEmail(RegistrationForm):
     email addresses.
 
     """
+
     def clean_email(self):
         """
         Validate that the supplied email address is unique for the
         site.
 
         """
-        if User.objects.filter(email__iexact=self.cleaned_data['email']):
-            raise forms.ValidationError(_("This email address is already in use. Please supply a different email address."))
-        return self.cleaned_data['email']
+        if User.objects.filter(email__iexact=self.cleaned_data["email"]):
+            raise forms.ValidationError(
+                _(
+                    "This email address is already in use. Please supply a different email address."
+                ),
+                code="invalid_email",
+            )
+        return self.cleaned_data["email"]
 
 
 class RegistrationFormNoFreeEmail(RegistrationForm):
@@ -90,10 +99,22 @@ class RegistrationFormNoFreeEmail(RegistrationForm):
     override the attribute ``bad_domains``.
 
     """
-    bad_domains = ['aim.com', 'aol.com', 'email.com', 'gmail.com',
-                   'googlemail.com', 'hotmail.com', 'hushmail.com',
-                   'msn.com', 'mail.ru', 'mailinator.com', 'live.com',
-                   'yahoo.com', 'outlook.com']
+
+    bad_domains = [
+        "aim.com",
+        "aol.com",
+        "email.com",
+        "gmail.com",
+        "googlemail.com",
+        "hotmail.com",
+        "hushmail.com",
+        "msn.com",
+        "mail.ru",
+        "mailinator.com",
+        "live.com",
+        "yahoo.com",
+        "outlook.com",
+    ]
 
     def clean_email(self):
         """
@@ -101,12 +122,17 @@ class RegistrationFormNoFreeEmail(RegistrationForm):
         webmail domains.
 
         """
-        email_domain = self.cleaned_data['email'].split('@')[1]
+        email_domain = self.cleaned_data["email"].split("@")[1]
         if email_domain in self.bad_domains:
-            raise forms.ValidationError(_("Registration using free email addresses is prohibited. Please supply a different email address."))
-        return self.cleaned_data['email']
+            raise forms.ValidationError(
+                _(
+                    "Registration using free email addresses is prohibited. Please supply a different email address."
+                ),
+                code="invalid_email",
+            )
+        return self.cleaned_data["email"]
 
 
 class ResendActivationForm(forms.Form):
-    required_css_class = 'required'
+    required_css_class = "required"
     email = forms.EmailField(label=_("E-mail"))

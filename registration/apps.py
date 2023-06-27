@@ -2,6 +2,7 @@ from django.apps import AppConfig
 
 
 class RegistrationConfig(AppConfig):
-    name = 'registration'
-    verbose_name = "Django-registration provides user registration functionality for Django websites."
-    default_auto_field = 'django.db.models.AutoField'
+    default_auto_field = "django.db.models.BigAutoField"
+    verbose_name = "Django-multi-registration provides multi-step user registration"
+    "functionality for Django websites."
+    name = "registration"
