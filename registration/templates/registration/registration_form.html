@@ -1,15 +1,15 @@
 {% extends "registration/registration_base.html" %}
 {% load i18n %}
 
-{% block title %}{% trans "Register for an account" %}{% endblock %}
+{% block title %}{% translate "Register for an account" %}{% endblock title %}
 
 {% block content %}
 <form method="post" action="">
     {% csrf_token %}
     {{ form.as_p }}
-    <input type="submit" value="{% trans 'Submit' %}" />
+    <input type="submit" value="{% translate 'Submit' %}" />
 </form>
-{% endblock %}
+{% endblock content %}
 
 
 {% comment %}

@@ -1,1 +1,1 @@
-{% load i18n %}{% trans "Account approval on" %} {{ site.name }}
+{% load i18n %}{% translate "Account approval on" %} {{ site.name }}

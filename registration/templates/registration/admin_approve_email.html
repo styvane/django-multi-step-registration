@@ -3,28 +3,23 @@
 <html lang="en">
 
 <head>
-    <title>{{ site.name }} {% trans "registration" %}</title>
+    <title>{{ site.name }} {% translate "registration" %}</title>
 </head>
 
 <body>
 <p>
-    {% blocktrans with site_name=site.name %}
+    {% blocktranslate with site_name=site.name %}
     The following user ({{ user }}) has asked to register an account at
     {{ site_name }}.
-    {% endblocktrans %}
+    {% endblocktranslate %}
 </p>
 <p>
-    {% blocktrans %}
+    {% blocktranslate %}
     To approve this, please
-    {% endblocktrans %}
-    <a href="http://{{site.domain}}{% url 'registration_admin_approve' profile_id %}"> {% trans "click here" %}</a>.
+    {% endblocktranslate %}
+    <a href="http://{{site.domain}}{% url 'registration_admin_approve' profile_id %}"> {% translate "click here" %}</a>.
 </p>
-<p>
-    {% blocktrans with site_name=site.name %}
-    Sincerely,
-    {{ site_name }} Management
-    {% endblocktrans %}
-</p>
+{% include "registration/signature.html" %}
 </body>
 
 </html>

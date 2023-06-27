@@ -1,10 +1,12 @@
 {% load i18n %}
-{% blocktrans with site_name=site.name %}
+{% blocktranslate with site_name=site.name %}
 The following user ({{ user }}) has asked to register an account at
 {{ site_name }}.
-{% endblocktrans %}
-{% blocktrans %}
+{% endblocktranslate %}
+{% blocktranslate %}
 To approve this, please click the following link.
-{% endblocktrans %}
+{% endblocktranslate %}
 
 http://{{site.domain}}{% url 'registration_admin_approve' profile_id %}
+
+{% include "registration/signature.txt" %}
