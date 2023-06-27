@@ -1,9 +1,8 @@
 from django.conf import settings
-from django.contrib.auth import authenticate
-from django.contrib.auth import login
+from django.contrib.auth import authenticate, login
 
 from ... import signals
-from ...views import RegistrationView as BaseRegistrationView
+from ...views import BaseRegistrationView
 
 
 class RegistrationView(BaseRegistrationView):
@@ -14,20 +13,21 @@ class RegistrationView(BaseRegistrationView):
     up and logged in).
 
     """
-    success_url = 'registration_complete'
+
+    success_url = "registration_complete"
 
     def register(self, form):
         new_user = form.save()
-        username_field = getattr(new_user, 'USERNAME_FIELD', 'username')
+        username_field = getattr(new_user, "USERNAME_FIELD", "username")
         new_user = authenticate(
             username=getattr(new_user, username_field),
-            password=form.cleaned_data['password1']
+            password=form.cleaned_data["password1"],
         )
 
         login(self.request, new_user)
-        signals.user_registered.send(sender=self.__class__,
-                                     user=new_user,
-                                     request=self.request)
+        signals.user_registered.send(
+            sender=self.__class__, user=new_user, request=self.request
+        )
         return new_user
 
     def registration_allowed(self):
@@ -43,4 +43,4 @@ class RegistrationView(BaseRegistrationView):
           ``False``, registration is not permitted.
 
         """
-        return getattr(settings, 'REGISTRATION_OPEN', True)
+        return getattr(settings, "REGISTRATION_OPEN", True)

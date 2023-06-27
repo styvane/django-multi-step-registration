@@ -2,7 +2,7 @@ from django.contrib.sites.shortcuts import get_current_site
 
 from ... import signals
 from ...models import SupervisedRegistrationProfile
-from ...views import ApprovalView as BaseApprovalView
+from ...views import BaseApprovalView
 from ..default.views import ActivationView as BaseActivationView
 from ..default.views import RegistrationView as BaseRegistrationView
 from ..default.views import ResendActivationView as BaseResendActivationView
@@ -51,22 +51,20 @@ class ApprovalView(BaseApprovalView):
         corresponding to that key (if possible).
 
         After successful approval, the signal
-        ``registration.signals.user_approved`` will be sent, with the
+        ``registrationsignals.user_approved`` will be sent, with the
         newly approved ``User`` as the keyword argument ``user`` and
         the class of this backend as the sender.
 
         """
-        user_id = kwargs.get('profile_id', '')
-        approved_user = (
-            SupervisedRegistrationProfile.objects.admin_approve_user(
-                user_id, get_current_site(self.request)))
+        user_id = kwargs.get("profile_id", "")
+        approved_user = SupervisedRegistrationProfile.objects.admin_approve_user(
+            user_id, get_current_site(self.request)
+        )
         if approved_user:
             signals.user_approved.send(
-                sender=self.__class__,
-                user=approved_user,
-                request=self.request
+                sender=self.__class__, user=approved_user, request=self.request
             )
         return approved_user
 
     def get_success_url(self, user):
-        return ('registration_approve_complete', (), {})
+        return ("registration_approve_complete", (), {})

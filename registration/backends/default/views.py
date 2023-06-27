@@ -5,9 +5,7 @@ from django.shortcuts import render
 from ... import signals
 from ...models import RegistrationProfile
 from ...users import UserModel
-from ...views import ActivationView as BaseActivationView
-from ...views import RegistrationView as BaseRegistrationView
-from ...views import ResendActivationView as BaseResendActivationView
+from ...views import BaseActivationView, BaseRegistrationView, BaseResendActivationView
 
 
 class RegistrationView(BaseRegistrationView):
@@ -56,8 +54,9 @@ class RegistrationView(BaseRegistrationView):
     fields and supported operations.
 
     """
-    SEND_ACTIVATION_EMAIL = getattr(settings, 'SEND_ACTIVATION_EMAIL', True)
-    success_url = 'registration_complete'
+
+    SEND_ACTIVATION_EMAIL = getattr(settings, "SEND_ACTIVATION_EMAIL", True)
+    success_url = "registration_complete"
 
     registration_profile = RegistrationProfile
 
@@ -80,18 +79,17 @@ class RegistrationView(BaseRegistrationView):
 
         After the ``User`` and ``RegistrationProfile`` are created and
         the activation email is sent, the signal
-        ``registration.signals.user_registered`` will be sent, with
+        ``registrationsignals.user_registered`` will be sent, with
         the new ``User`` as the keyword argument ``user`` and the
         class of this backend as the sender.
 
         """
         site = get_current_site(self.request)
 
-        if hasattr(form, 'save'):
+        if hasattr(form, "save"):
             new_user_instance = form.save(commit=False)
         else:
-            new_user_instance = (UserModel().objects
-                                 .create_user(**form.cleaned_data))
+            new_user_instance = UserModel().objects.create_user(**form.cleaned_data)
 
         new_user = self.registration_profile.objects.create_inactive_user(
             new_user=new_user_instance,
@@ -99,9 +97,9 @@ class RegistrationView(BaseRegistrationView):
             send_email=self.SEND_ACTIVATION_EMAIL,
             request=self.request,
         )
-        signals.user_registered.send(sender=self.__class__,
-                                     user=new_user,
-                                     request=self.request)
+        signals.user_registered.send(
+            sender=self.__class__, user=new_user, request=self.request
+        )
         return new_user
 
     def registration_allowed(self):
@@ -117,11 +115,10 @@ class RegistrationView(BaseRegistrationView):
           ``False``, registration is not permitted.
 
         """
-        return getattr(settings, 'REGISTRATION_OPEN', True)
+        return getattr(settings, "REGISTRATION_OPEN", True)
 
 
 class ActivationView(BaseActivationView):
-
     registration_profile = RegistrationProfile
 
     def activate(self, *args, **kwargs):
@@ -130,27 +127,27 @@ class ActivationView(BaseActivationView):
         account corresponding to that key (if possible).
 
         After successful activation, the signal
-        ``registration.signals.user_activated`` will be sent, with the
+        ``registrationsignals.user_activated`` will be sent, with the
         newly activated ``User`` as the keyword argument ``user`` and
         the class of this backend as the sender.
 
         """
-        activation_key = kwargs.get('activation_key', '')
+        activation_key = kwargs.get("activation_key", "")
         site = get_current_site(self.request)
         user, activated = self.registration_profile.objects.activate_user(
-            activation_key, site)
+            activation_key, site
+        )
         if activated:
-            signals.user_activated.send(sender=self.__class__,
-                                        user=user,
-                                        request=self.request)
+            signals.user_activated.send(
+                sender=self.__class__, user=user, request=self.request
+            )
         return user
 
     def get_success_url(self, user):
-        return ('registration_activation_complete', (), {})
+        return ("registration_activation_complete", (), {})
 
 
 class ResendActivationView(BaseResendActivationView):
-
     registration_profile = RegistrationProfile
 
     def resend_activation(self, form):
@@ -164,17 +161,18 @@ class ResendActivationView(BaseResendActivationView):
 
         """
         site = get_current_site(self.request)
-        email = form.cleaned_data['email']
+        email = form.cleaned_data["email"]
         return self.registration_profile.objects.resend_activation_mail(
-            email, site, self.request)
+            email, site, self.request
+        )
 
     def render_form_submitted_template(self, form):
         """
         Renders resend activation complete template with the submitted email.
 
         """
-        email = form.cleaned_data['email']
-        context = {'email': email}
-        return render(self.request,
-                      'registration/resend_activation_complete.html',
-                      context)
+        email = form.cleaned_data["email"]
+        context = {"email": email}
+        return render(
+            self.request, "registration/resend_activation_complete.html", context
+        )
