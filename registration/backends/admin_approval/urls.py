@@ -21,7 +21,7 @@ from django.conf import settings
 from django.conf.urls import include
 from django.contrib.auth.decorators import permission_required
 from django.urls import path
-from django.views.generic.base import TemplateView
+from django.views.generic import TemplateView
 
 from .views import ActivationView, ApprovalView, RegistrationView, ResendActivationView
 

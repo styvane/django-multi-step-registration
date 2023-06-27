@@ -1,11 +1,14 @@
 from django.conf import settings
+from django.contrib.auth import get_user_model
 from django.contrib.sites.shortcuts import get_current_site
 from django.shortcuts import render
 
 from ... import signals
 from ...models import RegistrationProfile
-from ...users import UserModel
 from ...views import BaseActivationView, BaseRegistrationView, BaseResendActivationView
+
+
+User = get_user_model()
 
 
 class RegistrationView(BaseRegistrationView):
@@ -89,7 +92,7 @@ class RegistrationView(BaseRegistrationView):
         if hasattr(form, "save"):
             new_user_instance = form.save(commit=False)
         else:
-            new_user_instance = UserModel().objects.create_user(**form.cleaned_data)
+            new_user_instance = User.objects.create_user(**form.cleaned_data)
 
         new_user = self.registration_profile.objects.create_inactive_user(
             new_user=new_user_instance,
