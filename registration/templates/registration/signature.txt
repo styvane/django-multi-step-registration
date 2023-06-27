@@ -1,3 +1,4 @@
+{% load i18n %}
 {% blocktranslate with site_name=site.name %}
     Sincerely,
     {{ site_name }} Team
