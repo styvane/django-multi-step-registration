@@ -8,13 +8,12 @@ import warnings
 from django.apps import apps
 from django.conf import settings
 from django.contrib.auth import get_user_model
-from django.core.exceptions import (
-    ImproperlyConfigured,
-    MultipleObjectsReturned,
-    ObjectDoesNotExist,
-)
+from django.core.exceptions import ImproperlyConfigured
+from django.core.exceptions import MultipleObjectsReturned
+from django.core.exceptions import ObjectDoesNotExist
 from django.core.mail import EmailMultiAlternatives
-from django.db import models, transaction
+from django.db import models
+from django.db import transaction
 from django.template import TemplateDoesNotExist
 from django.template.loader import render_to_string
 from django.utils import timezone

@@ -1,5 +1,6 @@
 from django.conf import settings
-from django.contrib.auth import get_backends, login
+from django.contrib.auth import get_backends
+from django.contrib.auth import login
 from django.dispatch import Signal
 
 # An admin has approved a user's account

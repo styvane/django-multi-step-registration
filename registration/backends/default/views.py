@@ -5,8 +5,9 @@ from django.shortcuts import render
 
 from ... import signals
 from ...models import RegistrationProfile
-from ...views import BaseActivationView, BaseRegistrationView, BaseResendActivationView
-
+from ...views import BaseActivationView
+from ...views import BaseRegistrationView
+from ...views import BaseResendActivationView
 
 User = get_user_model()
 

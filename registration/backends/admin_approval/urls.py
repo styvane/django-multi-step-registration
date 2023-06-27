@@ -23,7 +23,10 @@ from django.contrib.auth.decorators import permission_required
 from django.urls import path
 from django.views.generic import TemplateView
 
-from .views import ActivationView, ApprovalView, RegistrationView, ResendActivationView
+from .views import ActivationView
+from .views import ApprovalView
+from .views import RegistrationView
+from .views import ResendActivationView
 
 urlpatterns = [
     path(

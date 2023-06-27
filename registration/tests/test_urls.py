@@ -14,7 +14,8 @@ from django.conf.urls import include
 from django.urls import path
 from django.views.generic import TemplateView
 
-from registration.views import BaseActivationView, BaseRegistrationView
+from registration.views import BaseActivationView
+from registration.views import BaseRegistrationView
 
 urlpatterns = [
     # Test the 'activate' view with custom template

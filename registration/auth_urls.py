@@ -23,7 +23,8 @@ consult a specific backend's documentation for details.
 
 """
 from django.contrib.auth import views as auth_views
-from django.urls import path, reverse_lazy
+from django.urls import path
+from django.urls import reverse_lazy
 
 urlpatterns = [
     path(

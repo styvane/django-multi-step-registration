@@ -1,5 +1,6 @@
 from django.conf import settings
-from django.contrib.auth import authenticate, login
+from django.contrib.auth import authenticate
+from django.contrib.auth import login
 
 from ... import signals
 from ...views import BaseRegistrationView

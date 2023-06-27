@@ -4,10 +4,10 @@ from django.core import mail
 from django.test.utils import override_settings
 from django.urls import reverse
 
+from .test_default_backend import DefaultBackendViewTests
+
 from registration.backends.admin_approval.views import RegistrationView
 from registration.models import SupervisedRegistrationProfile
-
-from .test_default_backend import DefaultBackendViewTests
 
 User = get_user_model()
 

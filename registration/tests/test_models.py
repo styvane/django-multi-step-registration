@@ -8,12 +8,15 @@ from datetime import timedelta
 from django.apps import apps
 from django.conf import settings
 from django.contrib.auth import get_user_model
-from django.core import mail, management
+from django.core import mail
+from django.core import management
 from django.core.exceptions import ImproperlyConfigured
-from django.test import TransactionTestCase, override_settings
+from django.test import TransactionTestCase
+from django.test import override_settings
 from django.utils import timezone
 
-from registration.models import RegistrationProfile, SupervisedRegistrationProfile
+from registration.models import RegistrationProfile
+from registration.models import SupervisedRegistrationProfile
 
 Site = apps.get_model("sites", "Site")
 
