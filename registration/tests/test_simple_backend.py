@@ -4,6 +4,7 @@ from django.test import TestCase
 from django.test import override_settings
 from django.urls import reverse
 
+
 from registration.forms import RegistrationForm
 
 User = get_user_model()
@@ -31,10 +32,11 @@ class SimpleBackendViewTests(TestCase):
         resp = self.client.post(
             reverse("registration_register"),
             data={
-                "username": "bob",
-                "email": "bob@example.com",
-                "password1": "secret",
-                "password2": "secret",
+                "user-username": "bob",
+                "user-email": "bob@example.com",
+                "user-password1": "secret",
+                "user-password2": "secret",
+                "registration_view-current_step": "user",
             },
         )
         self.assertRedirects(resp, reverse("registration_disallowed"))
@@ -58,14 +60,17 @@ class SimpleBackendViewTests(TestCase):
         resp = self.client.post(
             reverse("registration_register"),
             data={
-                "username": "bob",
-                "email": "bob@example.com",
-                "password1": "secret",
-                "password2": "secret",
+                "user-username": "bob",
+                "user-email": "bob@example.com",
+                "user-password1": "secret",
+                "user-password2": "secret",
+                "registration_view-current_step": "user",
             },
         )
-        new_user = User.objects.get(username="bob")
+
         self.assertEqual(302, resp.status_code)
+        new_user = User.objects.get(username="bob")
+
         self.assertIn(
             getattr(settings, "SIMPLE_BACKEND_REDIRECT_URL", "/"), resp["Location"]
         )
@@ -88,10 +93,11 @@ class SimpleBackendViewTests(TestCase):
         resp = self.client.post(
             reverse("registration_register"),
             data={
-                "username": "bob",
-                "email": "bob@example.com",
-                "password1": "secret",
-                "password2": "notsecret",
+                "user-username": "bob",
+                "user-email": "bob@example.com",
+                "user-password1": "secret",
+                "user-password2": "notsecret",
+                "registration_view-current_step": "user",
             },
         )
         self.assertEqual(200, resp.status_code)

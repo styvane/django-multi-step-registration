@@ -25,6 +25,7 @@ classifiers = [
 [tool.poetry.dependencies]
 python = "^3.11"
 django = "^4.2.2"
+django-formtools = "^2.4.1"
 
 
 [tool.poetry.group.dev.dependencies]
@@ -40,7 +41,7 @@ force_single_line = true
 forced_separate = "registration"
 
 [tool.pytest.ini_options]
-DJANGO_SETTINGS_MODULE = "test_app.settings"
+DJANGO_SETTINGS_MODULE = "test_app.settings_test"
 
 [build-system]
 requires = ["poetry-core"]

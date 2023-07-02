@@ -26,11 +26,12 @@ ALLOWED_HOSTS = ["*"]
 
 INSTALLED_APPS = [
     "django.contrib.auth",
+    "django.contrib.sessions",
     "django.contrib.sites",
     "django.contrib.admin",
-    "django.contrib.sessions",
     "django.contrib.contenttypes",
     "django.contrib.messages",
+    "formtools",
     "registration",
     "test_app",
 ]
@@ -52,6 +53,7 @@ TEMPLATES = [
         "APP_DIRS": True,
         "OPTIONS": {
             "context_processors": [
+                "django.template.context_processors.request",
                 "django.contrib.auth.context_processors.auth",
                 "django.template.context_processors.debug",
                 "django.template.context_processors.i18n",

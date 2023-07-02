@@ -19,7 +19,7 @@ from registration.models import RegistrationProfile
 User = get_user_model()
 
 
-@override_settings(ROOT_URLCONF="test_app.urls_default", ACCOUNT_ACTIVATION_DAYS=7)
+@override_settings(ROOT_URLCONF="test_app.urls_default")
 class DefaultBackendViewTests(TransactionTestCase):
     """
     Test the default registration backend.
@@ -55,10 +55,11 @@ class DefaultBackendViewTests(TransactionTestCase):
         resp = self.client.post(
             reverse("registration_register"),
             data={
-                "username": "bob",
-                "email": "bob@example.com",
-                "password1": "secret",
-                "password2": "secret",
+                "user-username": "bob",
+                "user-email": "bob@example.com",
+                "user-password1": "secret",
+                "user-password2": "secret",
+                "registration_view-current_step": "user",
             },
         )
         self.assertRedirects(resp, reverse("registration_disallowed"))
@@ -84,10 +85,11 @@ class DefaultBackendViewTests(TransactionTestCase):
         resp = self.client.post(
             reverse("registration_register"),
             data={
-                "username": "bob",
-                "email": "bob@example.com",
-                "password1": "secret",
-                "password2": "secret",
+                "user-username": "bob",
+                "user-email": "bob@example.com",
+                "user-password1": "secret",
+                "user-password2": "secret",
+                "registration_view-current_step": "user",
             },
         )
         self.assertRedirects(resp, reverse("registration_complete"))
@@ -120,10 +122,11 @@ class DefaultBackendViewTests(TransactionTestCase):
         request = request_factory.post(
             "/",
             data={
-                "username": "bob",
-                "email": "bob@example.com",
-                "password1": "secret",
-                "password2": "secret",
+                "user-username": "bob",
+                "user-email": "bob@example.com",
+                "user-password1": "secret",
+                "user-password2": "secret",
+                "registration_no_email_view-current_step": "user",
             },
         )
         request.user = AnonymousUser()
@@ -144,6 +147,7 @@ class DefaultBackendViewTests(TransactionTestCase):
     @override_settings(
         INSTALLED_APPS=(
             "django.contrib.auth",
+            "formtools",
             "registration",
         )
     )
@@ -157,10 +161,11 @@ class DefaultBackendViewTests(TransactionTestCase):
         resp = self.client.post(
             reverse("registration_register"),
             data={
-                "username": "bob",
-                "email": "bob@example.com",
-                "password1": "secret",
-                "password2": "secret",
+                "user-username": "bob",
+                "user-email": "bob@example.com",
+                "user-password1": "secret",
+                "user-password2": "secret",
+                "registration_view-current_step": "user",
             },
         )
         self.assertEqual(302, resp.status_code)
@@ -183,10 +188,11 @@ class DefaultBackendViewTests(TransactionTestCase):
         resp = self.client.post(
             reverse("registration_register"),
             data={
-                "username": "bob",
-                "email": "bob@example.com",
-                "password1": "secret",
-                "password2": "notsecret",
+                "user-username": "bob",
+                "user-email": "bob@example.com",
+                "user-password1": "secret",
+                "user-password2": "notsecret",
+                "registration_view-current_step": "user",
             },
         )
         self.assertEqual(200, resp.status_code)
@@ -201,10 +207,11 @@ class DefaultBackendViewTests(TransactionTestCase):
         """
         create_inactive_user.side_effect = DatabaseError()
         valid_data = {
-            "username": "bob",
-            "email": "bob@example.com",
-            "password1": "secret",
-            "password2": "secret",
+            "user-username": "bob",
+            "user-email": "bob@example.com",
+            "user-password1": "secret",
+            "user-password2": "secret",
+            "registration_view-current_step": "user",
         }
         with self.assertRaises(DatabaseError):
             self.client.post(reverse("registration_register"), data=valid_data)
@@ -218,10 +225,11 @@ class DefaultBackendViewTests(TransactionTestCase):
         resp = self.client.post(
             reverse("registration_register"),
             data={
-                "username": "bob",
-                "email": "bob@example.com",
-                "password1": "secret",
-                "password2": "secret",
+                "user-username": "bob",
+                "user-email": "bob@example.com",
+                "user-password1": "secret",
+                "user-password2": "secret",
+                "registration_view-current_step": "user",
             },
         )
 
@@ -244,10 +252,11 @@ class DefaultBackendViewTests(TransactionTestCase):
         resp = self.client.post(
             reverse("registration_register"),
             data={
-                "username": "bob",
-                "email": "bob@example.com",
-                "password1": "secret",
-                "password2": "secret",
+                "user-username": "bob",
+                "user-email": "bob@example.com",
+                "user-password1": "secret",
+                "user-password2": "secret",
+                "registration_view-current_step": "user",
             },
         )
 
@@ -277,10 +286,11 @@ class DefaultBackendViewTests(TransactionTestCase):
         resp = self.client.post(
             reverse("registration_register"),
             data={
-                "username": "bob",
-                "email": "bob@example.com",
-                "password1": "secret",
-                "password2": "secret",
+                "user-username": "bob",
+                "user-email": "bob@example.com",
+                "user-password1": "secret",
+                "user-password2": "secret",
+                "registration_view-current_step": "user",
             },
         )
 

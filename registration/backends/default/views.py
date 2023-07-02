@@ -9,8 +9,6 @@ from ...views import BaseActivationView
 from ...views import BaseRegistrationView
 from ...views import BaseResendActivationView
 
-User = get_user_model()
-
 
 class RegistrationView(BaseRegistrationView):
     """
@@ -83,7 +81,7 @@ class RegistrationView(BaseRegistrationView):
 
         After the ``User`` and ``RegistrationProfile`` are created and
         the activation email is sent, the signal
-        ``registrationsignals.user_registered`` will be sent, with
+        ``registration.signals.user_registered`` will be sent, with
         the new ``User`` as the keyword argument ``user`` and the
         class of this backend as the sender.
 
@@ -93,6 +91,7 @@ class RegistrationView(BaseRegistrationView):
         if hasattr(form, "save"):
             new_user_instance = form.save(commit=False)
         else:
+            User = get_user_model()
             new_user_instance = User.objects.create_user(**form.cleaned_data)
 
         new_user = self.registration_profile.objects.create_inactive_user(
