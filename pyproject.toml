@@ -1,12 +1,14 @@
 [tool.poetry]
-name = "registration"
+name = "multi-step-registration"
 version = "1.0.0"
 description = "An extensible multi-step user registration application for Django"
 authors = ["Styvane Soukossi <4968379+styvane@users.noreply.github.com>"]
+maintainers = ["Styvane Soukossi <4968379+styvane@users.noreply.github.com>"]
 license = "BSD-3-Clause"
 readme = "README.rst"
-packages = [{include = "registration"}]
 keywords = ["django", "registration", "formtools"]
+packages = [{include = "registration"}]
+exclude = ["test_app"]
 repository = "https://github.com/styvane/django-multi-step-registration"
 classifiers = [
   "Development Status :: 5 - Production/Stable",
@@ -34,6 +36,9 @@ black = "^23.3.0"
 isort = "^5.12.0"
 pytest = "^7.4.0"
 pytest-django = "^4.5.2"
+tox = "^4.6.3"
+coverage = "^7.2.7"
+pytest-cov = "^4.1.0"
 
 [tool.isort]
 profile = "black"
