@@ -48,6 +48,20 @@ forced_separate = "registration"
 [tool.pytest.ini_options]
 DJANGO_SETTINGS_MODULE = "test_app.settings_test"
 
+[tool.coverage.run]
+branch = true
+omit = ["*/migrations/*"]
+
+[tool.coverage.report]
+exclude_lines = [
+# Have to re-enable the standard pragma
+"pragma: no cover",
+# Don't complain if tests don't hit defensive assertion code:
+"raise NotImplementedError"
+]
+show_missing = 1
+ignore_errors = true
+
 [build-system]
 requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
