@@ -3,3 +3,6 @@ __pycache__
 .vscode
 db.sqlite3
 .venv
+dist
+.coverage
+*.egg-info
