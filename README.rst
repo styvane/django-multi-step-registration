@@ -35,6 +35,7 @@ Django-multi-step-registration is licensed under `BSD License`
 Acknowledgements
 ----------------
 Much of the code is borrowed from `django-registration-redux`_
+
 .. _`raise them here`: https://github.com/styvane/django-multi-step-registration/issues
 .. _`Poetry`: https://github.com/python-poetry/poetry
 .. _`tox`: https://github.com/tox-dev/tox

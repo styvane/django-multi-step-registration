@@ -20,7 +20,7 @@ class SimpleBackendViewTests(TestCase):
 
         """
         resp = self.client.get(reverse("registration_register"))
-        self.assertEqual(200, resp.status_code)
+        assert 200 == resp.status_code
 
     @override_settings(REGISTRATION_OPEN=False)
     def test_registration_closed(self):
@@ -48,9 +48,9 @@ class SimpleBackendViewTests(TestCase):
 
         """
         resp = self.client.get(reverse("registration_register"))
-        self.assertEqual(200, resp.status_code)
+        assert 200 == resp.status_code
         self.assertTemplateUsed(resp, "registration/registration_form.html")
-        self.assertIsInstance(resp.context["form"], RegistrationForm)
+        assert isinstance(resp.context["form"], RegistrationForm)
 
     def test_registration(self):
         """
@@ -68,22 +68,20 @@ class SimpleBackendViewTests(TestCase):
             },
         )
 
-        self.assertEqual(302, resp.status_code)
+        assert 302 == resp.status_code
         new_user = User.objects.get(username="bob")
 
-        self.assertIn(
-            getattr(settings, "SIMPLE_BACKEND_REDIRECT_URL", "/"), resp["Location"]
-        )
+        assert getattr(settings, "SIMPLE_BACKEND_REDIRECT_URL", "/") in resp["Location"]
 
-        self.assertTrue(new_user.check_password("secret"))
-        self.assertEqual(new_user.email, "bob@example.com")
+        assert new_user.check_password("secret")
+        assert "bob@example.com" == new_user.email
 
         # New user must be active.
-        self.assertTrue(new_user.is_active)
+        assert new_user.is_active
 
         # New user must be logged in.
         resp = self.client.get(reverse("registration_register"), follow=True)
-        self.assertTrue(resp.context["user"].is_authenticated)
+        assert resp.context["user"].is_authenticated
 
     def test_registration_failure(self):
         """
@@ -100,5 +98,5 @@ class SimpleBackendViewTests(TestCase):
                 "registration_view-current_step": "user",
             },
         )
-        self.assertEqual(200, resp.status_code)
-        self.assertFalse(resp.context["form"].is_valid())
+        assert 200 == resp.status_code
+        assert not resp.context["form"].is_valid()

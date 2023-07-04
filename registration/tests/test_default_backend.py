@@ -43,7 +43,7 @@ class DefaultBackendViewTests(TransactionTestCase):
 
         """
         resp = self.client.get(reverse("registration_register"))
-        self.assertEqual(200, resp.status_code)
+        assert 200 == resp.status_code
 
     @override_settings(REGISTRATION_OPEN=False)
     def test_registration_closed(self):
@@ -71,9 +71,9 @@ class DefaultBackendViewTests(TransactionTestCase):
 
         """
         resp = self.client.get(reverse("registration_register"))
-        self.assertEqual(200, resp.status_code)
+        assert 200 == resp.status_code
         self.assertTemplateUsed(resp, "registration/registration_form.html")
-        self.assertIsInstance(resp.context["form"], RegistrationForm)
+        assert isinstance(resp.context["form"], RegistrationForm)
 
     def test_registration(self):
         """
@@ -96,16 +96,16 @@ class DefaultBackendViewTests(TransactionTestCase):
 
         new_user = User.objects.get(username="bob")
 
-        self.assertTrue(new_user.check_password("secret"))
-        self.assertEqual(new_user.email, "bob@example.com")
+        assert new_user.check_password("secret")
+        assert "bob@example.com" == new_user.email
 
         # New user must not be active.
-        self.assertFalse(new_user.is_active)
+        assert not new_user.is_active
 
         # A registration profile was created, and an activation email
         # was sent.
-        self.assertEqual(self.registration_profile.objects.count(), 1)
-        self.assertEqual(len(mail.outbox), 1)
+        assert 1 == self.registration_profile.objects.count()
+        assert 1 == len(mail.outbox)
 
     def test_registration_no_email(self):
         """
@@ -140,9 +140,9 @@ class DefaultBackendViewTests(TransactionTestCase):
 
         User.objects.get(username="bob")
         # A registration profile was created, and no activation email was sent.
-        self.assertEqual(self.registration_profile.objects.count(), 1)
-        self.assertEqual(len(mail.outbox), 0)
-        self.assertEqual(request.session.get("registration_email"), "bob@example.com")
+        assert 1 == self.registration_profile.objects.count()
+        assert 0 == len(mail.outbox)
+        assert "bob@example.com" == request.session.get("registration_email")
 
     @override_settings(
         INSTALLED_APPS=(
@@ -168,17 +168,16 @@ class DefaultBackendViewTests(TransactionTestCase):
                 "registration_view-current_step": "user",
             },
         )
-        self.assertEqual(302, resp.status_code)
+        assert 302 == resp.status_code
 
         new_user = User.objects.get(username="bob")
 
-        self.assertTrue(new_user.check_password("secret"))
-        self.assertEqual(new_user.email, "bob@example.com")
+        assert new_user.check_password("secret")
+        assert "bob@example.com" == new_user.email
+        assert not new_user.is_active
 
-        self.assertFalse(new_user.is_active)
-
-        self.assertEqual(self.registration_profile.objects.count(), 1)
-        self.assertEqual(len(mail.outbox), 1)
+        assert 1 == self.registration_profile.objects.count()
+        assert 1 == len(mail.outbox)
 
     def test_registration_failure(self):
         """
@@ -273,10 +272,10 @@ class DefaultBackendViewTests(TransactionTestCase):
             )
         )
 
-        self.assertEqual(200, resp.status_code)
+        assert 200 == resp.status_code
         self.assertTemplateUsed(resp, "registration/activate.html")
         user = User.objects.get(username="bob")
-        self.assertFalse(user.is_active)
+        assert not user.is_active
 
     def test_resend_activation(self):
         """
@@ -301,7 +300,7 @@ class DefaultBackendViewTests(TransactionTestCase):
             data={"email": profile.user.email},
         )
         self.assertTemplateUsed(resp, "registration/resend_activation_complete.html")
-        self.assertEqual(resp.context["email"], profile.user.email)
+        assert resp.context["email"] == profile.user.email
 
     def test_resend_activation_invalid_email(self):
         """

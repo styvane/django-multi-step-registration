@@ -8,5 +8,5 @@ django-step-registration changelog
 * Rename registration.ActivationView to registration.BaseActivationView
 * Rename registration.ResendActivationView to registration.BaseResendActivationView
 * Rename registration.ApprovalView to registration.BaseApprovalView
-
+* registration.BaseRegistrationView is a django-formtools SessionWidzadView.
 

@@ -29,7 +29,7 @@ class RegistrationFormTests(TestCase):
 
         form = forms.RegistrationForm()
 
-        self.assertTrue(self.User.USERNAME_FIELD in form.fields)
+        assert self.User.USERNAME_FIELD in form.fields
 
     def test_registration_form_subclass_is_valid(self):
         """
@@ -45,4 +45,4 @@ class RegistrationFormTests(TestCase):
 
         form = forms.RegistrationForm(data=data)
 
-        self.assertTrue(form.is_valid())
+        assert form.is_valid()

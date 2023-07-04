@@ -56,7 +56,7 @@ class AdminApprovalBackendViewTests(DefaultBackendViewTests):
         )
 
         profile = self.registration_profile.objects.get(user__username="bob")
-        self.assertFalse(profile.user.is_active)
+        assert not profile.user.is_active
 
         resp = self.client.get(
             reverse(
@@ -75,7 +75,7 @@ class AdminApprovalBackendViewTests(DefaultBackendViewTests):
             )
         )
         profile.user.refresh_from_db()
-        self.assertTrue(profile.user.is_active)
+        assert profile.user.is_active
         self.assertRedirects(resp, reverse("registration_approve_complete"))
 
     @override_settings(
@@ -110,7 +110,7 @@ class AdminApprovalBackendViewTests(DefaultBackendViewTests):
         )
         self.assertRedirects(resp, reverse("registration_activation_complete"))
         admins_mail = mail.outbox[1]
-        self.assertEqual(admins_mail.to, [to[1] for to in settings.REGISTRATION_ADMINS])
+        assert admins_mail.to == [to[1] for to in settings.REGISTRATION_ADMINS]
 
     @override_settings(
         REGISTRATION_ADMINS="registration.tests.test_admin_approval_backend.get_registration_admins"
@@ -141,4 +141,4 @@ class AdminApprovalBackendViewTests(DefaultBackendViewTests):
         )
         self.assertRedirects(resp, reverse("registration_activation_complete"))
         admins_mail = mail.outbox[1]
-        self.assertEqual(admins_mail.to, [to[1] for to in get_registration_admins()])
+        assert admins_mail.to == [to[1] for to in get_registration_admins()]

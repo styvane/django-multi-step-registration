@@ -2,7 +2,6 @@ from django.contrib.admin import helpers
 from django.contrib.auth import get_user_model
 from django.core import mail
 from django.test import TestCase
-from django.test.client import Client
 from django.test.utils import override_settings
 from django.urls import reverse
 
@@ -12,7 +11,6 @@ User = get_user_model()
 
 
 @override_settings(
-    ACCOUNT_ACTIVATION_DAYS=7,
     REGISTRATION_DEFAULT_FROM_EMAIL="registration@email.com",
     REGISTRATION_EMAIL_HTML=True,
     DEFAULT_FROM_EMAIL="django@email.com",
@@ -23,7 +21,6 @@ class AdminCustomActionsTestCase(TestCase):
     """
 
     def setUp(self):
-        self.client = Client()
         admin_user = User.objects.create_superuser("admin", "admin@test.com", "admin")
         self.client.login(username=admin_user.get_username(), password=admin_user)
 
@@ -41,7 +38,7 @@ class AdminCustomActionsTestCase(TestCase):
         new_user = User.objects.create_user(**self.user_info)
         profile = RegistrationProfile.objects.create_profile(new_user)
 
-        self.assertFalse(profile.activated)
+        assert not profile.activated
 
         registrationprofile_list = reverse(
             "admin:registration_registrationprofile_changelist"
@@ -53,7 +50,7 @@ class AdminCustomActionsTestCase(TestCase):
         self.client.post(registrationprofile_list, post_data, follow=True)
 
         profile = RegistrationProfile.objects.get(user=new_user)
-        self.assertTrue(profile.activated)
+        assert profile.activated
 
     def test_resend_activation_email(self):
         """
@@ -71,5 +68,5 @@ class AdminCustomActionsTestCase(TestCase):
         }
         self.client.post(registrationprofile_list, post_data, follow=True)
 
-        self.assertEqual(len(mail.outbox), 1)
-        self.assertEqual(mail.outbox[0].to, [self.user_info["email"]])
+        assert 1 == len(mail.outbox)
+        assert mail.outbox[0].to == [self.user_info["email"]]
