@@ -24,8 +24,10 @@ ACCOUNT_AUTHENTICATED_REGISTRATION_REDIRECTS = getattr(
     settings, "ACCOUNT_AUTHENTICATED_REGISTRATION_REDIRECTS", True
 )
 
+WizardView = getattr(settings, "REGISTRATION_WIZARDVIEW", SessionWizardView)
 
-class BaseRegistrationView(SessionWizardView):
+
+class BaseRegistrationView(WizardView):
     """
     Base class for user registration views.
     """
@@ -64,7 +66,12 @@ class BaseRegistrationView(SessionWizardView):
         return super().dispatch(request, *args, **kwargs)
 
     def done(self, form_list, form_dict, **kwargs):
-        user_form = form_dict[self.user_form_step]
+        user_form = form_dict.get(self.user_form_step)
+        if user_form is None:
+            raise Exception(
+                "Invalid 'user_form_step' name. Please set the correct user_form_step_name"
+            )
+
         new_user = self.register(user_form)
 
         success_url = self.get_success_url(new_user)
