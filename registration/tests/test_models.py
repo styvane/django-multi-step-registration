@@ -5,6 +5,7 @@ import warnings
 from copy import copy
 from datetime import timedelta
 
+import pytest
 from django.apps import apps
 from django.conf import settings
 from django.contrib.auth import get_user_model
@@ -1069,14 +1070,16 @@ class SupervisedRegistrationModelTests(RegistrationModelTests):
         """
         Approving a non existent user profile does nothing and returns False
         """
+
         new_user = self.registration_profile.objects.create_inactive_user(
             site=Site.objects.get_current(), **self.user_info
         )
 
         with self.assertRaises(ImproperlyConfigured):
-            self.registration_profile.objects.send_admin_approve_email(
-                new_user, Site.objects.get_current()
-            )
+            with pytest.warns(UserWarning):
+                self.registration_profile.objects.send_admin_approve_email(
+                    new_user, Site.objects.get_current()
+                )
 
     @override_settings(REGISTRATION_ADMINS=())
     def test_no_registration_admins_registered(self):
