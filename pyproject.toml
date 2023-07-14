@@ -47,6 +47,7 @@ forced_separate = "registration"
 
 [tool.pytest.ini_options]
 DJANGO_SETTINGS_MODULE = "test_app.settings_test"
+filterwarnings = ["ignore:::.*(pkg_resources)",]
 
 [tool.coverage.run]
 branch = true
