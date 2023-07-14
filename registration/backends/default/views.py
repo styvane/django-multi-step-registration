@@ -62,7 +62,7 @@ class RegistrationView(BaseRegistrationView):
 
     registration_profile = RegistrationProfile
 
-    def register(self, form):
+    def register(self, form_dict):
         """
         Given a username, email address and password, register a new
         user account, which will initially be inactive.
@@ -85,14 +85,17 @@ class RegistrationView(BaseRegistrationView):
         the new ``User`` as the keyword argument ``user`` and the
         class of this backend as the sender.
 
+        ``self.post_register`` will then process the ``extra_forms``.
+
         """
         site = get_current_site(self.request)
 
-        if hasattr(form, "save"):
-            new_user_instance = form.save(commit=False)
+        user_form = form_dict.pop("user")
+        if hasattr(user_form, "save"):
+            new_user_instance = user_form.save(commit=False)
         else:
             User = get_user_model()
-            new_user_instance = User.objects.create_user(**form.cleaned_data)
+            new_user_instance = User.objects.create_user(**user_form.cleaned_data)
 
         new_user = self.registration_profile.objects.create_inactive_user(
             new_user=new_user_instance,
@@ -103,6 +106,9 @@ class RegistrationView(BaseRegistrationView):
         signals.user_registered.send(
             sender=self.__class__, user=new_user, request=self.request
         )
+
+        self.post_register(new_user, form_dict)
+
         return new_user
 
     def registration_allowed(self):

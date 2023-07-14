@@ -5,7 +5,6 @@ Views which allow users to create and activate accounts.
 
 from django.conf import settings
 from django.core.exceptions import ImproperlyConfigured
-from django.db import transaction
 from django.shortcuts import redirect
 from django.utils.decorators import method_decorator
 from django.utils.module_loading import import_string
@@ -33,8 +32,24 @@ class BaseRegistrationView(WizardView):
     """
 
     disallowed_url = "registration_disallowed"
-    form_list = [("user", REGISTRATION_FORM)]
-    user_form_step = "user"
+    form_list = [
+        ("user", REGISTRATION_FORM),
+    ]
+
+    post_registration_forms = None
+
+    def __init_subclass__(cls, *args, **kwargs):
+        match cls.post_registration_forms:
+            case None:
+                pass
+            case [*forms] if all(isinstance(f, tuple) and len(f) == 2 for f in forms):
+                cls.form_list.extend(forms)
+            case _:
+                raise ImproperlyConfigured(
+                    "post_registration_forms attribute must be a list of tuples"
+                )
+        super().__init_subclass__(*args, **kwargs)
+
     http_method_names = ["get", "post", "head", "options", "trace"]
     success_url = None
     template_name = "registration/registration_form.html"
@@ -65,20 +80,13 @@ class BaseRegistrationView(WizardView):
 
         return super().dispatch(request, *args, **kwargs)
 
-    def done(self, form_list, form_dict, **kwargs):
-        user_form = form_dict.get(self.user_form_step)
-        if user_form is None:
-            raise Exception(
-                "Invalid 'user_form_step' name. Please set the correct user_form_step_name"
-            )
-
-        new_user = self.register(user_form)
-
-        success_url = self.get_success_url(new_user)
+    def done(self, _, form_dict, **kwargs):
+        new_user = self.register(form_dict)
 
         if hasattr(self.request, "session"):
-            self.request.session["registration_email"] = user_form.cleaned_data["email"]
+            self.request.session["registration_email"] = new_user.email
 
+        success_url = self.get_success_url(new_user)
         # success_url may be a simple string, or a tuple providing the
         # full argument set for redirect(). Attempting to unpack it
         # tells us which one it is.
@@ -97,17 +105,24 @@ class BaseRegistrationView(WizardView):
         """
         return True
 
-    def register(self, form):
+    def register(self, forms):
         """
         Implement user-registration logic here.
 
         """
         raise NotImplementedError
 
+    def post_register(self, user, extra_forms):
+        """
+        Implement post-user-registration logic here.
+
+        """
+
     def get_success_url(self, user=None):
         """
         Return the URL to redirect to after processing a valid form.
         Use the new user when constructing success_url.
+
         """
         if not self.success_url:
             raise ImproperlyConfigured("No URL to redirect to. Provide a success_url.")
@@ -124,8 +139,7 @@ class BaseActivationView(TemplateView):
     template_name = "registration/activate.html"
 
     def get(self, request, *args, **kwargs):
-        activated_user = self.activate(*args, **kwargs)
-        if activated_user:
+        if activated_user := self.activate(*args, **kwargs):
             success_url = self.get_success_url(activated_user)
             try:
                 to, args, kwargs = success_url
@@ -182,8 +196,7 @@ class BaseApprovalView(TemplateView):
     template_name = "registration/admin_approve.html"
 
     def get(self, request, *args, **kwargs):
-        approved_user = self.approve(*args, **kwargs)
-        if approved_user:
+        if approved_user := self.approve(*args, **kwargs):
             success_url = self.get_success_url(approved_user)
             try:
                 to, args, kwargs = success_url

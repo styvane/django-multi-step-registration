@@ -17,14 +17,17 @@ class RegistrationView(BaseRegistrationView):
 
     success_url = "registration_complete"
 
-    def register(self, form):
-        new_user = form.save()
+    def register(self, form_dict):
+        user_form = form_dict.pop("user")
+        new_user = user_form.save()
         username_field = getattr(new_user, "USERNAME_FIELD", "username")
         new_user = authenticate(
             username=getattr(new_user, username_field),
-            password=form.cleaned_data["password1"],
+            password=user_form.cleaned_data["password1"],
         )
 
+        extra_forms = {form for step, form in form_dict.items() if step != "user"}
+        self.post_register(new_user, extra_forms)
         login(self.request, new_user)
         signals.user_registered.send(
             sender=self.__class__, user=new_user, request=self.request
