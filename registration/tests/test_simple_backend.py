@@ -4,7 +4,6 @@ from django.test import TestCase
 from django.test import override_settings
 from django.urls import reverse
 
-
 from registration.forms import RegistrationForm
 
 User = get_user_model()

@@ -11,6 +11,7 @@ from django.utils.module_loading import import_string
 from django.views.decorators.debug import sensitive_post_parameters
 from django.views.generic import FormView
 from django.views.generic import TemplateView
+
 from formtools.wizard.views import SessionWizardView
 
 from .forms import ResendActivationForm

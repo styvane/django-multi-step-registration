@@ -5,7 +5,6 @@ import warnings
 from copy import copy
 from datetime import timedelta
 
-import pytest
 from django.apps import apps
 from django.conf import settings
 from django.contrib.auth import get_user_model
@@ -15,6 +14,8 @@ from django.core.exceptions import ImproperlyConfigured
 from django.test import TransactionTestCase
 from django.test import override_settings
 from django.utils import timezone
+
+import pytest
 
 from registration.models import RegistrationProfile
 from registration.models import SupervisedRegistrationProfile

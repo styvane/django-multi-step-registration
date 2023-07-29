@@ -1,5 +1,5 @@
 [tool.poetry]
-name = "multi-step-registration"
+name = "django-multi-step-registration"
 version = "1.0.0"
 description = "An extensible multi-step user registration application for Django"
 authors = ["Styvane Soukossi <4968379+styvane@users.noreply.github.com>"]
@@ -39,11 +39,14 @@ pytest-django = "^4.5.2"
 tox = "^4.6.3"
 coverage = "^7.2.7"
 pytest-cov = "^4.1.0"
+jupyter = "^1.0.0"
 
 [tool.isort]
 profile = "black"
 force_single_line = true
+known_django = "django"
 forced_separate = "registration"
+sections = ["STDLIB", "DJANGO", "THIRDPARTY", "FIRSTPARTY", "LOCALFOLDER"]
 
 [tool.pytest.ini_options]
 DJANGO_SETTINGS_MODULE = "test_app.settings_test"
